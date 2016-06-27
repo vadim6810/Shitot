@@ -1,0 +1,15 @@
+
+#calendar {
+	max-width: 900px;
+	margin: 0 auto;
+}
+#calendar .fc-today{
+	background: #ccc;
+}
+#calendar .fc-day:hover {
+	background: #ccc;
+}
+#calendar .fc-day {
+	transition: all .5s;
+	
+}
