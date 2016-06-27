@@ -2,10 +2,14 @@ package com.shitot.controller;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -13,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shitot.interfaces.Constants;
 import com.shitot.json.Doctor;
@@ -33,7 +38,11 @@ public class ShitotFesController {
 	Doctor doctor;
 	private RestTemplate rest = new RestTemplate();
 	private ObjectMapper om = new ObjectMapper();
-
+//	{
+//		List<HttpMessageConverter<?>> messageConverters=new ArrayList<>();
+//		messageConverters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+//		rest.setMessageConverters(messageConverters);
+//	}
 	/*
 	 * @RequestMapping({ "/", "home" }) String home() { return "home"; }
 	 */
@@ -84,7 +93,8 @@ public class ShitotFesController {
 
 	@RequestMapping("addUserForm")
 	public String addUserForm(Model model) {
-		if (!authorized) return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		return "addUserForm";
 	}
 
@@ -97,7 +107,8 @@ public class ShitotFesController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addUserAction")
 	String addUser(Model model, String name, String password) {
-		if (!authorized) return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		User newUser = new User(name, password);
 		Map<String, Object> response = rest.postForObject(Constants.URI + Constants.REQUEST_CREATE_USER, newUser,
 				Map.class);
@@ -114,7 +125,8 @@ public class ShitotFesController {
 
 	@RequestMapping("addDoctorForm")
 	public String addDoctorForm(Model model) {
-		if (!authorized) return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		return "addDoctorForm";
 	}
 
@@ -123,7 +135,8 @@ public class ShitotFesController {
 	String addDoctor(Model model, String nameLogin, String password, String telNumber, String telHouse, String email,
 			String address, String specialty, String targetAudience, String otherSpecialty, String preferential,
 			String expert, String certification, String lectors, String comments) {
-		if (!authorized) return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		Doctor doctor = new Doctor(nameLogin, password, telNumber, telHouse, email, address, specialty, targetAudience,
 				otherSpecialty, preferential, expert, certification, lectors, comments);
 		Map<String, Object> response = rest.postForObject(Constants.URI + Constants.REQUEST_CREATE_DOCTOR, doctor,
@@ -134,7 +147,8 @@ public class ShitotFesController {
 
 	@RequestMapping("addPatientForm")
 	public String addPatientForm(Model model) {
-		if (!authorized)return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		return "addPatientForm";
 	}
 
@@ -153,43 +167,70 @@ public class ShitotFesController {
 		return loggedUserHomePage(model, message);
 	}
 
+	@RequestMapping("addSymptomsForm")
+	public String addSymptomsForm(Model model){
+		if (!authorized)
+			return notAuthorized(model);
+		return "addSymptomsForm";
+	}
+	@SuppressWarnings("unchecked")
+	@RequestMapping("addSymptom")
+	public String addSymptoms(Model model, String symptomStr){
+		if (!authorized)
+			return notAuthorized(model);
+		Map<String,Object> response = rest
+				.postForObject(Constants.URI+Constants.REQUEST_CREATE_SYMPTOM, new Symptoms(symptomStr), Map.class);
+		model.addAttribute("result",om.convertValue(response.get("result"), String.class));
+		return "addSymptomsForm";
+	}
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addProblemForm")
 	public String addProblemForm(Model model) {
-		if (!authorized)return notAuthorized(model);
-		Map<String, Object> response = rest.getForObject(Constants.URI+Constants.REQUEST_GET_ALL_SYMPTOMS, Map.class);
-		String symptoms = om.convertValue(response.get("result"), String.class);
-		model.addAttribute("symptomsList",symptoms);
+		if (!authorized)
+			return notAuthorized(model);
+		Map<String, Object> response = rest.getForObject(Constants.URI + Constants.REQUEST_GET_ALL_SYMPTOMS, Map.class);
+		Object fromValue = response.get("data");
+		String json = "";
+		try {
+			json = om.writeValueAsString(fromValue);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("symptomsList", json);
 		return "addProblemForm";
 	}
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addProblemAction")
-	String addProblem(Model model, String problemName, String description, List<Symptoms> symptoms)
+	String addProblem(Model model, String problemName, String description, Integer[] symptoms)
 			throws ParseException {
-		if (!authorized)return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		String message = null;
-		if (problemName != null) {
-			Problems prob = new Problems(problemName, description, symptoms);
-			Map<String, Object> response = rest.postForObject(Constants.URI + Constants.REQUEST_CREATE_PROBLEM, prob,
-					Map.class);
-			message = om.convertValue(response.get("message"), String.class);
+		List<Symptoms> symptomsList=new ArrayList<>();
+		for (int symptomId : symptoms) {
+			symptomsList.add(new Symptoms(symptomId));
 		}
-		else message="Empty name";
+		Problems prob = new Problems(problemName,description,symptomsList);
+		Map<String, Object> response = rest.postForObject(Constants.URI + Constants.REQUEST_CREATE_PROBLEM, prob,
+				Map.class);
+		message = om.convertValue(response.get("result"), String.class);
 		return loggedUserHomePage(model, message);
 	}
 
 	@RequestMapping("addTreatmentForm")
 	public String addTreatmentForm(Model model) {
-		if (!authorized)return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		return "addTreatmentForm";
 	}
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addTreatmentAction")
-	String addTreatment(Model model, boolean isAlternativeDoctor, String infSourse, Date dateMeeting,
-			String patientId, String intervalId) throws ParseException {
-		if (!authorized) return notAuthorized(model);
+	String addTreatment(Model model, boolean isAlternativeDoctor, String infSourse, Date dateMeeting, String patientId,
+			String intervalId) throws ParseException {
+		if (!authorized)
+			return notAuthorized(model);
 		/* List<Problems> problems, Doctor doctor, Doctor alternativeDoctor, */
 		Date dateApplication = new Date();
 		System.out.println("DM " + dateMeeting.toString());
@@ -231,10 +272,12 @@ public class ShitotFesController {
 	@RequestMapping("getAllPatientForm")
 	public String getAllPatientForm(Model model) {
 		/**
-		 * must open a new page with patients table with option to select each patient and to inspect his data
-		 * such as dates of appointments, doctors info, payments etc...
+		 * must open a new page with patients table with option to select each
+		 * patient and to inspect his data such as dates of appointments,
+		 * doctors info, payments etc...
 		 */
-		if (!authorized)return notAuthorized(model);
+		if (!authorized)
+			return notAuthorized(model);
 		return "getAllPatientForm";
 	}
 

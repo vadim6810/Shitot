@@ -3,15 +3,17 @@ package com.shitot.dao;
 import java.util.*;
 import javax.persistence.*;
 
-@Entity
-@Table(name = "problems")
+import com.sun.istack.internal.NotNull;
+
+@Entity(name = "problems")
 public class ProblemsDAO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "problems_id")
     private int id;
-
+    
+    @NotNull
     private String nameProblem;
     private String description;
     

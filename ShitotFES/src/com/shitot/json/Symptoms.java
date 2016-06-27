@@ -6,15 +6,19 @@ public class Symptoms {
 
 	private String nameSymptom;
 
-	/*
-	 * private Boolean bBehavior; // ב. התנהגות private Boolean attention; //
-	 * קשב private Boolean anxiety; // חרדה private Boolean depression; //
-	 * דיכאון private Boolean selfWorth; // ערך עצמי private Boolean
-	 * socialSkills; // מיומנויות חברתיות private Boolean treatmentPaired; //
-	 * טיפול זוגי private Boolean eating; // אכילה private Boolean personality;
-	 * // ה.אישיות private Boolean trauma; // טראומה private Boolean
-	 * ParentalGuidance; // הדרכת הורים private Boolean pressure; // מ.לחץ
-	 * private Boolean pdd; // PDD private Boolean work; // עבודה
+	 /*private Boolean bBehavior; // ב. התנהגות
+	 private Boolean attention; // קשב 
+	 private Boolean anxiety; // חרדה 
+	 private Boolean depression; // דיכאון 
+	 private Boolean selfWorth; // ערך עצמי 
+	 private Boolean socialSkills; // מיומנויות חברתיות 
+	 private Boolean treatmentPaired; // טיפול זוגי 
+	 private Boolean eating; // אכילה 
+	 private Boolean personality; // ה.אישיות 
+	 private Boolean trauma; // טראומה 
+	 private Boolean ParentalGuidance; // הדרכת הורים 
+	 private Boolean pressure; // מ.לחץ
+	 private Boolean pdd; // PDD private Boolean work; // עבודה
 	 */
 	public Symptoms() {
 	}

@@ -1,9 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Add problem</title>
 <style>
 dt {
@@ -34,7 +32,7 @@ dd {
 		<dl>
 			<dt>Symptoms</dt>
 			<dd>
-				<select id="symptoms" name="symptoms" multiple="multiple"></select>
+				<select id="symptoms" name="symptoms" multiple></select>
 			</dd>
 		</dl>
 		<button type="submit">Add problem</button>
@@ -44,7 +42,8 @@ dd {
 		var sList = JSON.parse('${symptomsList}');
 		for ( var s in sList) {
 			var option = document.createElement("option");
-			option.innerHTML = sList[s];
+			option.setAttribute("value",sList[s].id);
+			option.innerHTML = sList[s].nameSymptom;
 			select.appendChild(option);
 		}
 	</script>

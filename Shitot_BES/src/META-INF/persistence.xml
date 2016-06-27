@@ -5,7 +5,8 @@
 	<persistence-unit name="springHibernate">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<properties>
-			<property name="hibernate.c3p0.idleConnectionTestPeriod" value="14400" />
+			<property name="hibernate.c3p0.idleConnectionTestPeriod"
+				value="14400" />
 			<property name="hibernate.c3p0.maxIdleTime" value="25200" />
 			<property name="hibernate.c3p0.min_size" value="10" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
@@ -13,11 +14,13 @@
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
 			<property name="hibernate.connection.username" value="root" />
 			<property name="hibernate.connection.password" value="" />
+			<property name="hibernate.connection.useUnicode" value="true" />
+			<property name="hibernate.connection.characterEncoding" value="UTF-8" />
 			<property name="validationQuery" value="SELECT 1" />
-            <property name="testOnBorrow" value="true" />
-            <property name="removeAbandoned" value="true" />
-            <property name="removeAbandonedTimeout" value="60" />
-            <property name="logAbandoned" value="true" />
+			<property name="testOnBorrow" value="true" />
+			<property name="removeAbandoned" value="true" />
+			<property name="removeAbandonedTimeout" value="60" />
+			<property name="logAbandoned" value="true" />
 		</properties>
 	</persistence-unit>
 </persistence>

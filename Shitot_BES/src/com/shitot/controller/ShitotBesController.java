@@ -31,7 +31,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	}
 
 	// Doctors Page
-//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_LOGIN_DOCTOR, method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> loginDoctor(@RequestBody Doctor doctor) throws RestException {
@@ -46,7 +46,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_CLINIC, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createClinic(@RequestBody Clinic clinic) throws RestException {
 		try {
@@ -58,8 +58,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_UPDATE_CLINIC, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> updateClinic(@RequestBody Clinic clinic) throws RestException {
 		try {
@@ -72,7 +72,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_UPDATE_PATIENT, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> updatePatient(@RequestBody Treatment treatment) throws RestException {
 		try {
@@ -85,17 +85,17 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_PERIOD + "/{doctorId}" + "/{startDateStr}"
 			+ "/{endDateStr}", method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> getPatientByPeriod(@PathVariable int doctorId,@PathVariable String startDateStr,@PathVariable
-			String endDateStr) throws RestException {
+	public @ResponseBody Map<String, Object> getPatientByPeriod(@PathVariable int doctorId,
+			@PathVariable String startDateStr, @PathVariable String endDateStr) throws RestException {
 		Date startDate, endDate;
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    	    startDate = format.parse(startDateStr);
-    	    endDate = format.parse(endDateStr);
-			System.out.println(startDate+" "+endDate);
+			startDate = format.parse(startDateStr);
+			endDate = format.parse(endDateStr);
+			System.out.println(startDate + " " + endDate);
 			List<Patient> pl = persistenceServices.getPatientByPeriod(doctorId, startDate, endDate);
 			System.out.println(pl.toString());
 			return Response.successResponse(pl);
@@ -103,13 +103,10 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	
-	
 
 	// Customer Page
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_LOGIN, method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> loginUser(@RequestBody User user) throws RestException {
@@ -124,7 +121,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_USER, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createUser(@RequestBody User user) throws RestException {
 		try {
@@ -136,8 +133,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_DOCTOR, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createDoctor(@RequestBody Doctor doctor) throws RestException {
 		try {
@@ -150,7 +147,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_PATIENT, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createPatient(@RequestBody Patient patient) throws RestException {
 		try {
@@ -162,8 +159,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_PROBLEM, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createProblem(@RequestBody Problems problem) throws RestException {
 		try {
@@ -175,10 +172,12 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
-	@RequestMapping(value = Constants.REQUEST_CREATE_TREATMENT+"/{patientId}"+"/{intervalId}", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> createTreatment(@RequestBody Treatment treatment,@PathVariable int patientId,@PathVariable int intervalId) throws RestException {
+
+	// *
+	@RequestMapping(value = Constants.REQUEST_CREATE_TREATMENT + "/{patientId}"
+			+ "/{intervalId}", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Object> createTreatment(@RequestBody Treatment treatment,
+			@PathVariable int patientId, @PathVariable int intervalId) throws RestException {
 		try {
 			if (persistenceServices.createTreatment(treatment, patientId, intervalId)) {
 				return Response.emptyResponse();
@@ -189,8 +188,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_ID + "/{patientId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientById(@PathVariable int patientId) throws RestException {
 		try {
@@ -199,9 +197,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_NAME + "/{patientName}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientByName(@PathVariable String patientName) throws RestException {
 		try {
@@ -211,7 +208,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_PATIENT, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllPatient() throws RestException {
 		try {
@@ -221,7 +218,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		}
 	}
 
-	//*
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_DOCTOR, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllDoctor() throws RestException {
 		try {
@@ -230,9 +227,9 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
-	@RequestMapping(value =  Constants.REQUEST_GET_DOCTOR_BY_CITY+"/{city}", method = RequestMethod.GET)
+
+	// *
+	@RequestMapping(value = Constants.REQUEST_GET_DOCTOR_BY_CITY + "/{city}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getDoctorByCity(@PathVariable String city) throws RestException {
 		try {
 			System.out.println(city);
@@ -241,19 +238,20 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
-	@RequestMapping(value =  Constants.REQUEST_GET_DOCTOR_BY_SPECIALIZATION+"/{specialty}", method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> getDoctorBySpecialization(@PathVariable String specialty) throws RestException {
+
+	// *
+	@RequestMapping(value = Constants.REQUEST_GET_DOCTOR_BY_SPECIALIZATION + "/{specialty}", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Object> getDoctorBySpecialization(@PathVariable String specialty)
+			throws RestException {
 		try {
 			return Response.successResponse(persistenceServices.getDoctorBySpecialty(specialty));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
-	@RequestMapping(value =  Constants.REQUEST_GET_PATIENT_NOT_PAYMENT, method = RequestMethod.GET)
+
+	// *
+	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_NOT_PAYMENT, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientNotPayment() throws RestException {
 		try {
 			return Response.successResponse(persistenceServices.getPatientNotPayment());
@@ -261,8 +259,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_DOCTOR_BY_NAME + "/{doctorName}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getDoctorByName(@PathVariable String doctorName) throws RestException {
 		try {
@@ -271,9 +269,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_DOCTOR_BY_ID + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getDoctorById(@PathVariable int doctorId) throws RestException {
 		try {
@@ -282,8 +279,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_SYMPTOMS, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllSymptoms() throws RestException {
 		try {
@@ -292,8 +289,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_DOCTOR + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientByDoctorId(@PathVariable int doctorId) throws RestException {
 		try {
@@ -302,52 +299,58 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
-	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_DOCTOR_NOT_PAYMENT + "/{doctorId}", method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> getPatientByDoctorNotPayment(@PathVariable int doctorId) throws RestException {
+
+	// *
+	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_DOCTOR_NOT_PAYMENT
+			+ "/{doctorId}", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Object> getPatientByDoctorNotPayment(@PathVariable int doctorId)
+			throws RestException {
 		try {
 			return Response.successResponse(persistenceServices.getPatientByDoctorNotPayment(doctorId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
-	@RequestMapping(value = Constants.REQUEST_GET_SUM_PATIENT_BY_PERIOD + "/{stDateStr}"+"/{endDateStr}", method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> getSumPatientByPeriod(@PathVariable String stDateStr, @PathVariable String endDateStr) throws RestException {
+
+	// *
+	@RequestMapping(value = Constants.REQUEST_GET_SUM_PATIENT_BY_PERIOD + "/{stDateStr}"
+			+ "/{endDateStr}", method = RequestMethod.GET)
+	public @ResponseBody Map<String, Object> getSumPatientByPeriod(@PathVariable String stDateStr,
+			@PathVariable String endDateStr) throws RestException {
 		Date startDate, endDate;
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    	    startDate = format.parse(stDateStr);
-    	    endDate = format.parse(endDateStr);
+			startDate = format.parse(stDateStr);
+			endDate = format.parse(endDateStr);
 			return Response.successResponse(persistenceServices.getSumPatientByPeriod(startDate, endDate));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
-	//*
+
+	// *
 	@RequestMapping(value = Constants.REQUEST_GET_STATISTIC_BY_SYMPTOM + "/{nameSymptom}", method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> getStatisticBySymptom(@PathVariable String nameSymptom) throws RestException {
+	public @ResponseBody Map<String, Object> getStatisticBySymptom(@PathVariable String nameSymptom)
+			throws RestException {
 		try {
-			
+
 			return Response.successResponse(persistenceServices.getStatisticBySymptom(nameSymptom));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_GET_STATISTIC_BY_SYMPTOMS, method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> getStatisticBySymptom(@RequestBody List<Symptoms> symptoms) throws RestException {
+	public @ResponseBody Map<String, Object> getStatisticBySymptom(@RequestBody List<Symptoms> symptoms)
+			throws RestException {
 		try {
-			
+
 			return Response.successResponse(persistenceServices.getStatisticBySymptoms(symptoms));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_NOT_MEETING, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientNotMeeting() throws RestException {
 		try {
@@ -356,12 +359,11 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_CREATE_SYMPTOM, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> addSymptom(@RequestBody Symptoms symptom) throws RestException {
 		try {
-			if (persistenceServices.addSymptom(symptom))
-			{
+			if (persistenceServices.addSymptom(symptom)) {
 				return Response.emptyResponse();
 			}
 			return Response.errorResponse(Constants.ERROR_EXISTED_SYMPTOM);
@@ -369,55 +371,55 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_DAY + "/{dateStr}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientByDay(@PathVariable String dateStr) throws RestException {
 		Date date;
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    	    date = format.parse(dateStr);
+			date = format.parse(dateStr);
 			return Response.successResponse(persistenceServices.getPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_GET_CALLED_PATIENT_BY_DAY + "/{dateStr}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getCalledPatientByDay(@PathVariable String dateStr) throws RestException {
 		Date date;
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    	    date = format.parse(dateStr);
+			date = format.parse(dateStr);
 			return Response.successResponse(persistenceServices.getCalledPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_GET_THERAPY_PATIENT_BY_DAY + "/{dateStr}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getTherapyPatientByDay(@PathVariable String dateStr) throws RestException {
 		Date date;
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    	    date = format.parse(dateStr);
+			date = format.parse(dateStr);
 			return Response.successResponse(persistenceServices.getTherapyPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_GET_PAYMENT_PATIENT_BY_DAY + "/{dateStr}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPaymentPatientByDay(@PathVariable String dateStr) throws RestException {
 		Date date;
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-    	    date = format.parse(dateStr);
+			date = format.parse(dateStr);
 			return Response.successResponse(persistenceServices.getTherapyPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
-	
+
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllCinic() throws RestException {
 		try {
@@ -426,8 +428,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC_BY_DOCTOR+"/{doctorId}", method = RequestMethod.GET)
+
+	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC_BY_DOCTOR + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllCinicByDoctor(@PathVariable int doctorId) throws RestException {
 		try {
 			return Response.successResponse(persistenceServices.getAllClinicByDocotr(doctorId));
@@ -435,8 +437,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC_BY_CITY+"/{city}", method = RequestMethod.GET)
+
+	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC_BY_CITY + "/{city}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllCinicByDoctor(@PathVariable String city) throws RestException {
 		try {
 			return Response.successResponse(persistenceServices.getAllClinicByCity(city));
@@ -444,8 +446,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	@RequestMapping(value = Constants.REQUEST_GET_FREE_INTERVALS_BY_DOCTOR+"/{doctorId}", method = RequestMethod.GET)
+
+	@RequestMapping(value = Constants.REQUEST_GET_FREE_INTERVALS_BY_DOCTOR + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getFreeIntervalByDoctor(@PathVariable int doctorId) throws RestException {
 		try {
 			return Response.successResponse(persistenceServices.getFreeIntervalByDoctor(doctorId));
@@ -453,8 +455,8 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-	
-	@RequestMapping(value = Constants.REQUEST_GET_FREE_INTERVALS_BY_CITY+"/{city}", method = RequestMethod.GET)
+
+	@RequestMapping(value = Constants.REQUEST_GET_FREE_INTERVALS_BY_CITY + "/{city}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getFreeIntervalByCity(@PathVariable String city) throws RestException {
 		try {
 			return Response.successResponse(persistenceServices.getFreeIntervalByCity(city));

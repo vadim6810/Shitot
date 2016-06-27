@@ -9,10 +9,10 @@ public interface Constants {
     String ERROR_EXISTED_PATIENT = "Patient already exists";
     String ERROR_NO_EXISTED_PATIENT_OR_DOCTOR = "No patient or doctor";
     String ERROR_EDIT_CALENDAR = "Error edit calendar";
-    String ERROR_EXISTED_CLINIC = "Clinic already exist";
-    String ERROR_EXISTED_PROBLEM = "Problem already exist";
+    String ERROR_EXISTED_CLINIC = "Clinic already exists";
+    String ERROR_EXISTED_PROBLEM = "Problem already exists";
     String ERROR_EXISTED_TREATMENT = "Treatment not create";
-    String ERROR_EXISTED_SYMPTOM = "Symtom not create";
+    String ERROR_EXISTED_SYMPTOM = "Symtom already exists";
 
    
 

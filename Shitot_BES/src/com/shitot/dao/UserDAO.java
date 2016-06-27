@@ -17,9 +17,7 @@ public class UserDAO {
     private String password;
     private String name;
 
-    public UserDAO() {
-	super();
-    }
+    public UserDAO() {}
 
     public String getPassword() {
 	return password;
