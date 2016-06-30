@@ -19,7 +19,7 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@Override
 	public User loginUser(User user) {
-		Query q = em.createQuery("SELECT u FROM UserDAO u where u.name = ?1");
+		Query q = em.createQuery("SELECT u FROM users u where u.name = ?1");
 		q.setParameter(1, user.getName());
 		UserDAO response;
 		try {
@@ -28,10 +28,10 @@ public class ServicesHibernate implements IShitotRepository {
 			return null;
 		}
 		if (user.getPassword().equals(response.getPassword())) {
-			user.setName(response.getName());
 			user.setUserId(response.getId());
+			return user;
 		}
-		return user;
+		return null;
 	}
 
 	// *
@@ -39,7 +39,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@Override
 	@Transactional
 	public boolean createUser(User user) {
-		Query q = em.createQuery("SELECT u FROM UserDAO u where u.name = ?1");
+		Query q = em.createQuery("SELECT u FROM users u where u.name = ?1");
 		q.setParameter(1, user.getName());
 		List<UserDAO> users = q.getResultList();
 		if (users.size() == 0) {
@@ -49,21 +49,55 @@ public class ServicesHibernate implements IShitotRepository {
 			em.persist(us);
 			return true;
 		}
-
 		return false;
 	}
 
 	// *
-	@Override
 	@SuppressWarnings("unchecked")
+	@Override
+	public List<Symptom> getAllSymptoms() {
+		Query q = em.createQuery("select s from symptoms s");
+		return ConvertorDaoToJson.convertSymptoms(q.getResultList());
+	}
+
+	// *
+	@Override
 	@Transactional
-	public boolean createPatient(Patient patient) {
-		Query q = em.createQuery("SELECT patient FROM PatientDAO patient WHERE patient.telNumber=?1");
-		q.setParameter(1, patient.getTelNumber());
-		List<PatientDAO> response = q.getResultList();
-		if (response.size() == 0) {
-			PatientDAO patientDao = ConvertorJsonToDao.convertPatient(patient);
-			em.persist(patientDao);
+	public boolean addSymptom(Symptom symptom) {
+		if (symptom == null)
+			return false;
+		Query q = em.createQuery("from symptoms s where s.name=?1");
+		q.setParameter(1, symptom.getName());
+		if (q.getResultList().size() != 0)
+			return false;
+		SymptomDAO symptomDao = ConvertorJsonToDao.convertSymptom(symptom);
+		em.persist(symptomDao);
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Problem> getAllProblems() {
+		Query query = em.createQuery("select name from problems");
+		return query.getResultList();
+	}
+
+	// *
+	@Override
+	@Transactional
+	public boolean createProblems(Problem problem) {
+		Query q = em.createQuery("Select p from problems p where p.name=?1");
+		q.setParameter(1, problem.getName());
+		if (q.getResultList().size() == 0) {
+			ProblemDAO prob = ConvertorJsonToDao.convertProblem(problem);
+			List<SymptomDAO> symptomsDao = new LinkedList<SymptomDAO>();
+			for (Symptom s : problem.getSymptoms()) {
+				SymptomDAO symptom = em.find(SymptomDAO.class, s.getId());
+				if (symptom != null)
+					symptomsDao.add(symptom);
+			}
+			prob.setSymptoms(symptomsDao);
+			em.persist(prob);
 			return true;
 		}
 		return false;
@@ -74,13 +108,28 @@ public class ServicesHibernate implements IShitotRepository {
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public boolean createDoctor(Doctor doctor) {
-		Query q = em.createQuery("SELECT doctor FROM DoctorDAO doctor WHERE doctor.nameLogin=?1");
-		q.setParameter(1, doctor.getNameLogin());
+		Query q = em.createQuery("SELECT d FROM doctors d WHERE d.name=?1");
+		q.setParameter(1, doctor.getName());
 		List<DoctorDAO> response = q.getResultList();
 		if (response.size() == 0) {
-			DoctorDAO doctorDao = new DoctorDAO();
-			doctorDao = ConvertorJsonToDao.convertDoctor(doctor);
+			DoctorDAO doctorDao = ConvertorJsonToDao.convertDoctor(doctor);
 			em.persist(doctorDao);
+			return true;
+		}
+		return false;
+	}
+
+	// *
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public boolean createPatient(Patient patient) {
+		Query q = em.createQuery("SELECT p FROM patients p WHERE p.telNumber=?1");
+		q.setParameter(1, patient.getTelNumber());
+		List<PatientDAO> response = q.getResultList();
+		if (response.size() == 0) {
+			PatientDAO patientDao = ConvertorJsonToDao.convertPatient(patient);
+			em.persist(patientDao);
 			return true;
 		}
 		return false;
@@ -96,17 +145,16 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Doctor> getAllDoctor() {
-		Query q = em.createQuery("SELECT doctor FROM DoctorDAO doctor");
-		List<DoctorDAO> doctors = q.getResultList();
-		return ConvertorDaoToJson.convertDoctors(doctors);
+	public List<Doctor> getAllDoctors() {
+		Query q = em.createQuery("SELECT d FROM doctors d");
+		return ConvertorDaoToJson.convertDoctors((List<DoctorDAO>) q.getResultList());
 	}
 
 	// *
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Patient> getAllPatient() {
-		Query q = em.createQuery("SELECT patient FROM PatientDAO patient");
+		Query q = em.createQuery("SELECT p FROM patients p");
 		List<PatientDAO> patients = q.getResultList();
 		return ConvertorDaoToJson.convertPatients(patients);
 	}
@@ -114,7 +162,7 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@Override
 	public Patient getPatientIdByName(String name) {
-		Query q = em.createQuery("SELECT p FROM PatientDAO p WHERE p.name=?1");
+		Query q = em.createQuery("SELECT p FROM patients p WHERE p.name=?1");
 		q.setParameter(1, name);
 		PatientDAO response;
 		try {
@@ -128,7 +176,7 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@Override
 	public Doctor getDoctorByName(String name) {
-		Query q = em.createQuery("SELECT d FROM DoctorDAO d WHERE d.nameLogin=?1");
+		Query q = em.createQuery("SELECT d FROM doctors d WHERE d.name=?1");
 		q.setParameter(1, name);
 		DoctorDAO response;
 		try {
@@ -147,43 +195,22 @@ public class ServicesHibernate implements IShitotRepository {
 	}
 
 	// *
-	@Override
-	@Transactional
-	public boolean createProblems(Problems problem) {
-		Query q = em.createQuery("Select p from problems p where p.nameProblem=?1");
-		q.setParameter(1, problem.getNameProblem());
-		if (q.getResultList().size() == 0) {
-			ProblemsDAO prob = ConvertorJsonToDao.convertProblem(problem);
-			List<SymptomsDAO> symptomsDao = new LinkedList<SymptomsDAO>();
-			for (Symptoms s : problem.getSymptoms()) {
-				SymptomsDAO symptom = em.find(SymptomsDAO.class, s.getId());
-				if (symptom != null)
-					symptomsDao.add(symptom);
-			}
-			prob.setSymptoms(symptomsDao);
-			em.persist(prob);
-			return true;
-		}
-		return false;
-	}
-
-	// *
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public boolean createClinic(Clinic clinic) {
 		int docId = clinic.getDoctor().getId();
 		Query q = em.createQuery(
-				"Select c from ClinicDAO c join c.doctor d where c.city=?1 and c.addressClinic=?2 and d.id=?3");
+				"Select c from clinics c join c.doctor d where c.city=?1 and c.addressClinic=?2 and d.id=?3");
 		q.setParameter(1, clinic.getCity()).setParameter(2, clinic.getAddressClinic()).setParameter(3, docId);
 		List<ClinicDAO> cls = q.getResultList();
 		if (cls.size() == 0) {
 			ClinicDAO cl = ConvertorJsonToDao.convertClinic(clinic);
-			em.persist(cl);
 			DoctorDAO doctor = em.find(DoctorDAO.class, docId);
 			cl.setDoctor(doctor);
 			List<SlotDAO> slotsDAO = createSlot(clinic.getSlots());
 			cl.setSlots(slotsDAO);
+			em.persist(cl);
 			List<ClinicDAO> c = doctor.getClinics();
 			c.add(cl);
 			System.out.println(cl.toString());
@@ -282,7 +309,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Clinic> getAllClinic() {
-		Query q = em.createQuery("Select c From ClinicDAO c");
+		Query q = em.createQuery("Select c From clinics c");
 		List<ClinicDAO> cl = q.getResultList();
 		List<Clinic> resCl = ConvertorDaoToJson.convertClinics(cl);
 		return resCl;
@@ -292,7 +319,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Clinic> getAllClinicByDocotr(int doctorId) {
-		Query q = em.createQuery("Select c From ClinicDAO c join c.doctor d Where d.id=?1");
+		Query q = em.createQuery("Select c From clinics c join c.doctor d Where d.id=?1");
 		q.setParameter(1, doctorId);
 		List<ClinicDAO> cl = q.getResultList();
 		List<Clinic> resCl = ConvertorDaoToJson.convertClinics(cl);
@@ -303,7 +330,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Clinic> getAllClinicByCity(String city) {
-		Query q = em.createQuery("Select c From ClinicDAO c Where c.city=?1");
+		Query q = em.createQuery("Select c From clinics c Where c.city=?1");
 		q.setParameter(1, city);
 		List<ClinicDAO> cl = q.getResultList();
 		List<Clinic> resCl = ConvertorDaoToJson.convertClinics(cl);
@@ -315,7 +342,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@Override
 	public List<Patient> getPatientByPeriod(int doctorId, Date startDate, Date endDate) {
 		Query q = em.createQuery(
-				"Select p From PatientDAO p join p.treatments t join t.doctor d Where d.id=?1 and t.dateMeeting between ?2 and ?3");
+				"Select p From patients p join p.treatments t join t.doctor d Where d.id=?1 and t.dateMeeting between ?2 and ?3");
 		q.setParameter(1, doctorId).setParameter(2, startDate, TemporalType.DATE).setParameter(3, endDate,
 				TemporalType.DATE);
 		List<PatientDAO> pat = q.getResultList();
@@ -326,8 +353,8 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@Override
 	public Doctor loginDoctor(Doctor doctor) {
-		Query q = em.createQuery("SELECT d FROM DoctorDAO d where d.nameLogin = ?1");
-		q.setParameter(1, doctor.getNameLogin());
+		Query q = em.createQuery("SELECT d FROM doctors d where d.name = ?1");
+		q.setParameter(1, doctor.getName());
 		DoctorDAO response;
 		try {
 			response = (DoctorDAO) q.getSingleResult();
@@ -336,15 +363,16 @@ public class ServicesHibernate implements IShitotRepository {
 		}
 		if (doctor.getPassword().equals(response.getPassword())) {
 			doctor = ConvertorDaoToJson.convertDoctor(response);
+			return doctor;
 		}
-		return doctor;
+		return null;
 	}
 
 	// *
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Doctor> getDoctorByClinicCity(String city) {
-		Query q = em.createQuery("Select d From DoctorDAO d join d.clinics c Where c.city=?1");
+		Query q = em.createQuery("Select d From doctors d join d.clinics c Where c.city=?1");
 		q.setParameter(1, city);
 		List<DoctorDAO> doctors = q.getResultList();
 		return ConvertorDaoToJson.convertDoctors(doctors);
@@ -354,7 +382,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Doctor> getDoctorBySpecialty(String specialty) {
-		Query q = em.createQuery("Select doctor From DoctorDAO doctor Where doctor.specialization=?1");
+		Query q = em.createQuery("Select d From doctors d Where d.specialty=?1");
 		q.setParameter(1, specialty);
 		List<DoctorDAO> doctors = q.getResultList();
 		return ConvertorDaoToJson.convertDoctors(doctors);
@@ -372,7 +400,7 @@ public class ServicesHibernate implements IShitotRepository {
 			e.printStackTrace();
 		}
 		System.out.println(cDate.toString());
-		Query q = em.createQuery("Select p From PatientDAO p Where p.dateMeeting<?1 and p.payment=0");
+		Query q = em.createQuery("Select p From patients p Where p.dateMeeting<?1 and p.payment=0");
 		q.setParameter(1, cDate, TemporalType.DATE);
 		List<PatientDAO> res = q.getResultList();
 		return ConvertorDaoToJson.convertPatients(res);
@@ -386,15 +414,15 @@ public class ServicesHibernate implements IShitotRepository {
 			return false;
 		TreatmentDAO treatmentDao = ConvertorJsonToDao.convertTreatment(treatment);
 		em.persist(treatmentDao);
-		List<ProblemsDAO> problemsDao = new LinkedList<ProblemsDAO>();
-		for (Problems probl : treatment.getProblems()) {
-			ProblemsDAO p = ConvertorJsonToDao.convertProblem(probl);
+		List<ProblemDAO> problemsDao = new LinkedList<ProblemDAO>();
+		for (Problem probl : treatment.getProblems()) {
+			ProblemDAO p = ConvertorJsonToDao.convertProblem(probl);
 			em.persist(p);
-			List<SymptomsDAO> symptomsDao = new LinkedList<SymptomsDAO>();
-			for (Symptoms s : probl.getSymptoms()) {
-				SymptomsDAO symDao = new SymptomsDAO();
+			List<SymptomDAO> symptomsDao = new LinkedList<SymptomDAO>();
+			for (Symptom s : probl.getSymptoms()) {
+				SymptomDAO symDao = new SymptomDAO();
 				if (s.getId() != 0)
-					symDao = em.find(SymptomsDAO.class, s.getId());
+					symDao = em.find(SymptomDAO.class, s.getId());
 				symptomsDao.add(symDao);
 			}
 			p.setSymptoms(symptomsDao);
@@ -431,14 +459,6 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Symptoms> getAllSymptoms() {
-		Query q = em.createQuery("select s from symptoms s");
-		return ConvertorDaoToJson.convertSymptoms(q.getResultList());
-	}
-
-	// *
-	@SuppressWarnings("unchecked")
-	@Override
 	public List<Patient> getPatientByDoctor(int doctorId) {
 		Query q = em.createQuery("Select p from PatientDAO p join p.treatment t join t.doctor d Where d.id=?1");
 		q.setParameter(1, doctorId);
@@ -451,7 +471,7 @@ public class ServicesHibernate implements IShitotRepository {
 	public List<Patient> getPatientByDoctorNotPayment(int doctorId) {
 		Date curDate = new Date();
 		Query q = em.createQuery(
-				"Select p from PatientDAO p join p.treatment t join t.doctor d Where d.id=?1 and t.dateMeeting<?2 and t.payment=0");
+				"Select p from patients p join p.treatment t join t.doctor d Where d.id=?1 and t.dateMeeting<?2 and t.payment=0");
 		q.setParameter(1, doctorId).setParameter(2, curDate);
 		return ConvertorDaoToJson.convertPatients(q.getResultList());
 	}
@@ -469,7 +489,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@Override
 	public int getStatisticBySymptom(String nameSymptom) {
 		Query q = em.createQuery(
-				"Select count(p) From PatientDAO p join p.problems pr join pr.symptoms s Where s.nameSymptom=?1");
+				"Select count(p) From patients p join p.problems pr join pr.symptoms s Where s.name=?1");
 		q.setParameter(1, nameSymptom);
 		int res = q.getFirstResult();
 		return res;
@@ -477,11 +497,11 @@ public class ServicesHibernate implements IShitotRepository {
 
 	// *
 	@Override
-	public Map<String, Integer> getStatisticBySymptoms(List<Symptoms> symptoms) {
+	public Map<String, Integer> getStatisticBySymptoms(List<Symptom> symptoms) {
 		Map<String, Integer> resultMap = new HashMap<String, Integer>();
-		for (Symptoms s : symptoms) {
-			int res = getStatisticBySymptom(s.getNameSymptom());
-			resultMap.put(s.getNameSymptom(), res);
+		for (Symptom s : symptoms) {
+			int res = getStatisticBySymptom(s.getName());
+			resultMap.put(s.getName(), res);
 		}
 		return resultMap;
 	}
@@ -492,31 +512,16 @@ public class ServicesHibernate implements IShitotRepository {
 	public List<Patient> getPatientNotMeeting() {
 		Date curDate = new Date();
 		Query q = em
-				.createQuery("Select p From PatientDAO p join p.treatmant t Where t.dateMeeting<?1 and t.payment=0");
+				.createQuery("Select p From patients p join p.treatmant t Where t.dateMeeting<?1 and t.payment=0");
 		q.setParameter(1, curDate, TemporalType.DATE);
 		return ConvertorDaoToJson.convertPatients(q.getResultList());
 	}
 
 	// *
 	@Override
-	@Transactional
-	public boolean addSymptom(Symptoms symptom) {
-		if (symptom == null)
-			return false;
-		Query q = em.createQuery("from symptoms s where s.nameSymptom=?1");
-		q.setParameter(1, symptom.getNameSymptom());
-		if (q.getResultList().size() != 0)
-			return false;
-		SymptomsDAO symptomDao = ConvertorJsonToDao.convertSymptom(symptom);
-		em.persist(symptomDao);
-		return true;
-	}
-
-	// *
-	@Override
 	public int getPatientByDay(Date date) {
 		Query q = em.createQuery(
-				"Select count(p) From PatientDAO p join p.treatment t Where t.dateApplication=?1 or t.dateMeeting=?1 or t.datePayment=?1");
+				"Select count(p) From patients p join p.treatment t Where t.dateApplication=?1 or t.dateMeeting=?1 or t.datePayment=?1");
 		q.setParameter(1, date, TemporalType.DATE);
 		int res = q.getFirstResult();
 		return res;
@@ -525,7 +530,7 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@Override
 	public int getCalledPatientByDay(Date date) {
-		Query q = em.createQuery("Select count(p) From PatientDAO p join p.treatment t Where t.dateApplication=?1");
+		Query q = em.createQuery("Select count(p) From patients p join p.treatment t Where t.dateApplication=?1");
 		q.setParameter(1, date, TemporalType.DATE);
 		int res = q.getFirstResult();
 		return res;
@@ -534,7 +539,7 @@ public class ServicesHibernate implements IShitotRepository {
 	// *
 	@Override
 	public int getTherapyPatientByDay(Date date) {
-		Query q = em.createQuery("Select count(p) From PatientDAO p join p.treatment t Where t.dateMeeting=?1");
+		Query q = em.createQuery("Select count(p) From patents p join p.treatment t Where t.dateMeeting=?1");
 		q.setParameter(1, date, TemporalType.DATE);
 		int res = q.getFirstResult();
 		return res;
@@ -553,7 +558,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Interval> getFreeIntervalByDoctor(int doctorId) {
-		Query q = em.createQuery("Select i From DoctorDAO d join d.clinic c join c.slot s"
+		Query q = em.createQuery("Select i From doctors d join d.clinic c join c.slot s"
 				+ " join c.interval i Where d.id=?1 and i.treatment=null");
 		q.setParameter(1, doctorId);
 		return ConvertorDaoToJson.convertIntervals(q.getResultList());
@@ -564,7 +569,7 @@ public class ServicesHibernate implements IShitotRepository {
 	@Override
 	public List<Interval> getFreeIntervalByCity(String city) {
 		Query q = em.createQuery(
-				"Select i From ClinicDAO c join c.slot s" + " join c.interval i Where c.city=?1 and i.treatment=null");
+				"Select i From clinics c join c.slot s join c.interval i Where c.city=?1 and i.treatment=null");
 		q.setParameter(1, city);
 		return ConvertorDaoToJson.convertIntervals(q.getResultList());
 	}

@@ -1,11 +1,15 @@
-package com.shitot.json;
+package com.shitot.dao;
 
+import javax.persistence.*;
 
-public class Symptoms {
-
+@Entity(name="symptoms")
+public class SymptomDAO {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="symptom_id")
 	int id;
 	
-	private String nameSymptom;
+	private String name;
 	/*private Boolean bBehavior; // ב. התנהגות
 	 private Boolean attention; // קשב
 	 private Boolean anxiety; // חרדה
@@ -21,15 +25,7 @@ public class Symptoms {
 	 private Boolean pdd; // PDD
 	 private Boolean work; // עבודה
 	*/
-	 public Symptoms() {	}
-	 
-	 
-
-	public Symptoms(String nameSymptom) {
-		this.nameSymptom = nameSymptom;
-	}
-
-
+	 public SymptomDAO() {	}
 
 	public int getId() {
 		return id;
@@ -39,22 +35,13 @@ public class Symptoms {
 		this.id = id;
 	}
 
-	public String getNameSymptom() {
-		return nameSymptom;
+	public String getName() {
+		return name;
 	}
 
-	public void setNameSymptom(String nameSymptom) {
-		this.nameSymptom = nameSymptom;
+	public void setName(String name) {
+		this.name = name;
 	}
-
-
-
-	@Override
-	public String toString() {
-		return "Symptoms [id=" + id + ", nameSymptom=" + nameSymptom + "]";
-	}
-	
-	
 
 	/*public Boolean getbBehavior() {
 		return bBehavior;

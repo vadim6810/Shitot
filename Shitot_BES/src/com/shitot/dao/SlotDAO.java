@@ -3,8 +3,7 @@ package com.shitot.dao;
 import java.util.*;
 import javax.persistence.*;
 
-@Entity
-@Table(name="slot")
+@Entity(name="slots")
 public class SlotDAO {
 	
 	@Id

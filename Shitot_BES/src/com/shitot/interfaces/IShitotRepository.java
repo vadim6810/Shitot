@@ -12,9 +12,9 @@ public interface IShitotRepository {
     boolean createUser(User user);
     boolean createDoctor(Doctor doctor);
     boolean createPatient(Patient patient);
-    boolean createProblems(Problems problem);
+    boolean createProblems(Problem problem);
     boolean createTreatment(Treatment treatment, int patientId, int intervalId);
-    boolean addSymptom(Symptoms symptom);
+    boolean addSymptom(Symptom symptom);
    
     
     // From Doctor
@@ -28,9 +28,9 @@ public interface IShitotRepository {
     
     //Requests
     List<Patient> getAllPatient();
-    List<Doctor> getAllDoctor();
+    List<Doctor> getAllDoctors();
     List<Clinic> getAllClinic();
-    List<Symptoms> getAllSymptoms();
+    List<Symptom> getAllSymptoms();
     List<Clinic> getAllClinicByDocotr(int doctorId);
     List<Clinic> getAllClinicByCity(String city);
     List<Doctor> getDoctorByClinicCity(String city);
@@ -51,9 +51,10 @@ public interface IShitotRepository {
 	int getCalledPatientByDay(Date date);
 	int getTherapyPatientByDay(Date date);
 	int getPaymentPatientByDay(Date date);
-	Map<String, Integer> getStatisticBySymptoms(List<Symptoms> symptoms);
+	Map<String, Integer> getStatisticBySymptoms(List<Symptom> symptoms);
 	List<Interval> getFreeIntervalByDoctor(int doctorId);
 	List<Interval> getFreeIntervalByCity(String city);
+	List<Problem> getAllProblems();
 
    
     

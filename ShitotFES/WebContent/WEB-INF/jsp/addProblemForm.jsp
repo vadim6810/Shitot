@@ -1,22 +1,12 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Add problem</title>
-<style>
-dt {
-	display: inline-block;
-	width: 170px;
-}
-dd {
-	display: inline-block;
-	margin-left: 8px;
-	vertical-align: top;
-}
-</style>
 </head>
 <body>
-	<form method="post" action="addProblemAction">
+	<form method="get" action="addProblemAction">
 		<dl>
 			<dt>Problem:</dt>
 			<dd>
@@ -30,22 +20,19 @@ dd {
 			</dd>
 		</dl>
 		<dl>
-			<dt>Symptoms</dt>
+			<dt>Symptoms:</dt>
 			<dd>
-				<select id="symptoms" name="symptoms" multiple></select>
+				<c:forEach items="${symptoms}" var="s">
+					<jsp:useBean id="s" scope="page" type="com.shitot.json.Symptom" />
+					<input type="checkbox" name="${s.id}" id="${s.id}">
+					<label for="${s.id}">${s.name}</label><br>
+				</c:forEach>
+				<a href="addSymptomForm">Add symptoms</a>
 			</dd>
 		</dl>
-		<button type="submit">Add problem</button>
+		<button type="submit">Add problem</button> ${resAddProbl}
 	</form>
-	<script type="text/javascript">
-		var select = document.getElementById("symptoms");
-		var sList = JSON.parse('${symptomsList}');
-		for ( var s in sList) {
-			var option = document.createElement("option");
-			option.setAttribute("value",sList[s].id);
-			option.innerHTML = sList[s].nameSymptom;
-			select.appendChild(option);
-		}
-	</script>
+	<br>
+	<a href="home">Cancel</a>
 </body>
 </html>

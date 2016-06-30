@@ -4,8 +4,7 @@ import java.util.*;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name="clinic")
+@Entity(name="clinics")
 public class ClinicDAO {
 	
 	@Id

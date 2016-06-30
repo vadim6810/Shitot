@@ -6,7 +6,7 @@ public class Problems {
 
     private int id;
 
-    private String nameProblem;
+    private String problemName;
     private String description;
     
     List<Symptoms> symptoms;
@@ -16,7 +16,7 @@ public class Problems {
     
 
 	public Problems(String nameProblem, String description, List<Symptoms> symptoms) {
-		this.nameProblem = nameProblem;
+		this.problemName = nameProblem;
 		this.description = description;
 		this.symptoms = symptoms;
 	}
@@ -35,12 +35,12 @@ public class Problems {
 
 
 	public String getNameProblem() {
-		return nameProblem;
+		return problemName;
 	}
 
 
 	public void setNameProblem(String nameProblem) {
-		this.nameProblem = nameProblem;
+		this.problemName = nameProblem;
 	}
 
 
@@ -66,7 +66,7 @@ public class Problems {
 
 	@Override
 	public String toString() {
-		return "Problems [id=" + id + ", nameProblem=" + nameProblem + ", description=" + description + ", symptoms="
+		return "Problems [id=" + id + ", nameProblem=" + problemName + ", description=" + description + ", symptoms="
 				+ symptoms + "]";
 	}
 

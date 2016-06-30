@@ -26,7 +26,7 @@ public class Treatment {
     @Temporal(TemporalType.DATE)
     private Date datePayment;
     
-    List<Problems> problems;
+    List<Problem> problems;
     Doctor doctor;
     Doctor alternativeDoctor;
 	
@@ -34,7 +34,7 @@ public class Treatment {
     
     
 	public Treatment(int payment, String checkNumber, boolean isAlternativeDoctor, String nameUser, String infSourse,
-			Date dateApplication, Date dateMeeting, Date datePayment, List<Problems> problems, Doctor doctor,
+			Date dateApplication, Date dateMeeting, Date datePayment, List<Problem> problems, Doctor doctor,
 			Doctor alternativeDoctor) {
 		this.payment = payment;
 		this.checkNumber = checkNumber;
@@ -90,11 +90,11 @@ public class Treatment {
 		this.datePayment = datePayment;
 	}
 
-	public List<Problems> getProblems() {
+	public List<Problem> getProblems() {
 		return problems;
 	}
 
-	public void setProblems(List<Problems> problems) {
+	public void setProblems(List<Problem> problems) {
 		this.problems = problems;
 	}
 

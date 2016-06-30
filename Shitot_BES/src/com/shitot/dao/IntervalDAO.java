@@ -2,8 +2,7 @@ package com.shitot.dao;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name="intervals")
+@Entity(name="intervals")
 public class IntervalDAO {
 	
 	@Id

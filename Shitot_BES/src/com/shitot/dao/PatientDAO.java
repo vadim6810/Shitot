@@ -8,8 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "patient")
+@Entity(name = "patients")
 public class PatientDAO {
 
     @Id

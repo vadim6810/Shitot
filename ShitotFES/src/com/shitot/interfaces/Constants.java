@@ -34,6 +34,7 @@ public interface Constants {
 	String REQUEST_GET_ALL_CLINIC_BY_DOCTOR = "/getAllClinicByDoctor";
 	String REQUEST_GET_ALL_DOCTOR = "/requestGetAllDoctor";
 	String REQUEST_GET_ALL_PATIENT = "/requestGetAllPatient";
+	String REQUEST_GET_ALL_PROBLEMS = "/requestGetAllProblems";
 	String REQUEST_GET_ALL_SYMPTOMS = "/getAllSymptoms";
 	String REQUEST_GET_CALENDAR_BY_DOCTOR_ID = "/requestGetCalendarByDoctorId";
 	String REQUEST_GET_CALLED_PATIENT_BY_DAY = "/getCalledPatientByDay";
@@ -58,4 +59,5 @@ public interface Constants {
 	String REQUEST_LOGIN_DOCTOR = "/loginDoctor";
 	String REQUEST_UPDATE_CLINIC = "/updateClinic";
 	String REQUEST_UPDATE_PATIENT = "/updatePatient";
+
 }

@@ -87,8 +87,7 @@ public class ShitotDoctorFesController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addClinicAction")
-	String addClinic(Model model, String city,
-			String addressClinic/* , List<Slot> slots */) throws ParseException {
+	String addClinic(Model model, String city,String addressClinic) throws ParseException {
 		if (!authorizeDoctor) {
 			String page = "home";
 			model.addAttribute("page", page);

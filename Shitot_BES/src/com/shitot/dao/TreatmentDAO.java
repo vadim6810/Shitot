@@ -20,7 +20,7 @@ public class TreatmentDAO {
     //private String doctor;
     
     @Temporal(TemporalType.DATE)
-    private Date dateApplication;
+    private Date applyDate;
     @Temporal(TemporalType.DATE)
     private Date dateMeeting;
     @Temporal(TemporalType.DATE)
@@ -30,7 +30,7 @@ public class TreatmentDAO {
     private String description;
     
     @OneToMany
-    List<ProblemsDAO> problems;
+    List<ProblemDAO> problems;
     @OneToOne
     DoctorDAO doctor;
     @OneToOne
@@ -78,11 +78,11 @@ public class TreatmentDAO {
 		this.datePayment = datePayment;
 	}
 
-	public List<ProblemsDAO> getProblems() {
+	public List<ProblemDAO> getProblems() {
 		return problems;
 	}
 
-	public void setProblems(List<ProblemsDAO> problems) {
+	public void setProblems(List<ProblemDAO> problems) {
 		this.problems = problems;
 	}
 
@@ -127,11 +127,11 @@ public class TreatmentDAO {
 	}
 
 	public Date getDateApplication() {
-		return dateApplication;
+		return applyDate;
 	}
 
 	public void setDateApplication(Date dateApplication) {
-		this.dateApplication = dateApplication;
+		this.applyDate = dateApplication;
 	}
 
 	public String getDescription() {

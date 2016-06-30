@@ -23,7 +23,7 @@ import com.shitot.response.Response;
 public class ShitotBesController extends ExceptionHandlerController {
 
 	@Autowired
-	IShitotRepository persistenceServices;
+	IShitotRepository repository;
 
 	@RequestMapping({ "/", "index" })
 	String index() {
@@ -37,7 +37,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	public Map<String, Object> loginDoctor(@RequestBody Doctor doctor) throws RestException {
 		try {
 			Doctor res = null;
-			if ((res = persistenceServices.loginDoctor(doctor)) != null) {
+			if ((res = repository.loginDoctor(doctor)) != null) {
 				return Response.successResponse(res);
 			}
 			return Response.errorResponse(Constants.ERROR_LOGIN);
@@ -50,7 +50,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_CREATE_CLINIC, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createClinic(@RequestBody Clinic clinic) throws RestException {
 		try {
-			if (persistenceServices.createClinic(clinic))
+			if (repository.createClinic(clinic))
 				return Response.emptyResponse();
 			else
 				return Response.errorResponse(Constants.ERROR_EXISTED_CLINIC);
@@ -63,7 +63,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_UPDATE_CLINIC, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> updateClinic(@RequestBody Clinic clinic) throws RestException {
 		try {
-			if (persistenceServices.updateClinic(clinic))
+			if (repository.updateClinic(clinic))
 				return Response.emptyResponse();
 			else
 				return Response.errorResponse(Constants.ERROR_EXISTED_CLINIC);
@@ -76,7 +76,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_UPDATE_PATIENT, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> updatePatient(@RequestBody Treatment treatment) throws RestException {
 		try {
-			if (persistenceServices.updatePatientByDoctor(treatment))
+			if (repository.updatePatientByDoctor(treatment))
 				return Response.emptyResponse();
 			else
 				return Response.errorResponse(Constants.ERROR_EXISTED_PATIENT);
@@ -96,7 +96,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 			startDate = format.parse(startDateStr);
 			endDate = format.parse(endDateStr);
 			System.out.println(startDate + " " + endDate);
-			List<Patient> pl = persistenceServices.getPatientByPeriod(doctorId, startDate, endDate);
+			List<Patient> pl = repository.getPatientByPeriod(doctorId, startDate, endDate);
 			System.out.println(pl.toString());
 			return Response.successResponse(pl);
 		} catch (Throwable e) {
@@ -111,7 +111,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@ResponseBody
 	public Map<String, Object> loginUser(@RequestBody User user) throws RestException {
 		try {
-			User res = persistenceServices.loginUser(user);
+			User res = repository.loginUser(user);
 			if (res != null) {
 				return Response.successResponse(res);
 			}
@@ -125,7 +125,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_CREATE_USER, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createUser(@RequestBody User user) throws RestException {
 		try {
-			if (persistenceServices.createUser(user)) {
+			if (repository.createUser(user)) {
 				return Response.emptyResponse();
 			}
 			return Response.errorResponse(Constants.ERROR_EXISTED_USER);
@@ -136,9 +136,10 @@ public class ShitotBesController extends ExceptionHandlerController {
 
 	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_DOCTOR, method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> createDoctor(@RequestBody Doctor doctor) throws RestException {
+	@ResponseBody
+	public Map<String, Object> createDoctor(@RequestBody Doctor doctor) throws RestException {
 		try {
-			if (persistenceServices.createDoctor(doctor)) {
+			if (repository.createDoctor(doctor)) {
 				return Response.emptyResponse();
 			}
 			return Response.errorResponse(Constants.ERROR_EXISTED_DOCTOR);
@@ -151,7 +152,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_CREATE_PATIENT, method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createPatient(@RequestBody Patient patient) throws RestException {
 		try {
-			if (persistenceServices.createPatient(patient)) {
+			if (repository.createPatient(patient)) {
 				return Response.emptyResponse();
 			}
 			return Response.errorResponse(Constants.ERROR_EXISTED_PATIENT);
@@ -162,9 +163,9 @@ public class ShitotBesController extends ExceptionHandlerController {
 
 	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_PROBLEM, method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> createProblem(@RequestBody Problems problem) throws RestException {
+	public @ResponseBody Map<String, Object> createProblem(@RequestBody Problem problem) throws RestException {
 		try {
-			if (persistenceServices.createProblems(problem)) {
+			if (repository.createProblems(problem)) {
 				return Response.emptyResponse();
 			}
 			return Response.errorResponse(Constants.ERROR_EXISTED_PROBLEM);
@@ -172,14 +173,22 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throw new RestException(e);
 		}
 	}
-
+	@RequestMapping(Constants.REQUEST_GET_ALL_PROBLEMS)
+	@ResponseBody
+	public Map<String,Object> getAllProblems() throws RestException{
+		try {
+			return Response.successResponse(repository.getAllProblems());
+		} catch (Throwable e) {
+			throw new RestException(e);
+		}
+	}
 	// *
 	@RequestMapping(value = Constants.REQUEST_CREATE_TREATMENT + "/{patientId}"
 			+ "/{intervalId}", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Object> createTreatment(@RequestBody Treatment treatment,
 			@PathVariable int patientId, @PathVariable int intervalId) throws RestException {
 		try {
-			if (persistenceServices.createTreatment(treatment, patientId, intervalId)) {
+			if (repository.createTreatment(treatment, patientId, intervalId)) {
 				return Response.emptyResponse();
 			}
 			return Response.errorResponse(Constants.ERROR_EXISTED_TREATMENT);
@@ -192,7 +201,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_ID + "/{patientId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientById(@PathVariable int patientId) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getPatient(patientId));
+			return Response.successResponse(repository.getPatient(patientId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -202,7 +211,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_NAME + "/{patientName}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientByName(@PathVariable String patientName) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getPatientIdByName(patientName));
+			return Response.successResponse(repository.getPatientIdByName(patientName));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -212,7 +221,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_PATIENT, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllPatient() throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getAllPatient());
+			return Response.successResponse(repository.getAllPatient());
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -220,9 +229,10 @@ public class ShitotBesController extends ExceptionHandlerController {
 
 	// *
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_DOCTOR, method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> getAllDoctor() throws RestException {
+	@ResponseBody
+	public Map<String, Object> getAllDoctor() throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getAllDoctor());
+			return Response.successResponse(repository.getAllDoctors());
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -233,7 +243,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	public @ResponseBody Map<String, Object> getDoctorByCity(@PathVariable String city) throws RestException {
 		try {
 			System.out.println(city);
-			return Response.successResponse(persistenceServices.getDoctorByClinicCity(city));
+			return Response.successResponse(repository.getDoctorByClinicCity(city));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -244,7 +254,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	public @ResponseBody Map<String, Object> getDoctorBySpecialization(@PathVariable String specialty)
 			throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getDoctorBySpecialty(specialty));
+			return Response.successResponse(repository.getDoctorBySpecialty(specialty));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -254,7 +264,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_NOT_PAYMENT, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientNotPayment() throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getPatientNotPayment());
+			return Response.successResponse(repository.getPatientNotPayment());
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -264,7 +274,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_DOCTOR_BY_NAME + "/{doctorName}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getDoctorByName(@PathVariable String doctorName) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getDoctorByName(doctorName));
+			return Response.successResponse(repository.getDoctorByName(doctorName));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -274,7 +284,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_DOCTOR_BY_ID + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getDoctorById(@PathVariable int doctorId) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getDoctor(doctorId));
+			return Response.successResponse(repository.getDoctor(doctorId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -282,9 +292,10 @@ public class ShitotBesController extends ExceptionHandlerController {
 
 	// *
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_SYMPTOMS, method = RequestMethod.GET)
-	public @ResponseBody Map<String, Object> getAllSymptoms() throws RestException {
+	@ResponseBody
+	public Map<String, Object> getAllSymptoms() throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getAllSymptoms());
+			return Response.successResponse(repository.getAllSymptoms());
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -294,7 +305,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_BY_DOCTOR + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientByDoctorId(@PathVariable int doctorId) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getPatientByDoctor(doctorId));
+			return Response.successResponse(repository.getPatientByDoctor(doctorId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -306,7 +317,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	public @ResponseBody Map<String, Object> getPatientByDoctorNotPayment(@PathVariable int doctorId)
 			throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getPatientByDoctorNotPayment(doctorId));
+			return Response.successResponse(repository.getPatientByDoctorNotPayment(doctorId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -322,7 +333,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 			startDate = format.parse(stDateStr);
 			endDate = format.parse(endDateStr);
-			return Response.successResponse(persistenceServices.getSumPatientByPeriod(startDate, endDate));
+			return Response.successResponse(repository.getSumPatientByPeriod(startDate, endDate));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -334,18 +345,18 @@ public class ShitotBesController extends ExceptionHandlerController {
 			throws RestException {
 		try {
 
-			return Response.successResponse(persistenceServices.getStatisticBySymptom(nameSymptom));
+			return Response.successResponse(repository.getStatisticBySymptom(nameSymptom));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
 
 	@RequestMapping(value = Constants.REQUEST_GET_STATISTIC_BY_SYMPTOMS, method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> getStatisticBySymptom(@RequestBody List<Symptoms> symptoms)
+	public @ResponseBody Map<String, Object> getStatisticBySymptom(@RequestBody List<Symptom> symptoms)
 			throws RestException {
 		try {
 
-			return Response.successResponse(persistenceServices.getStatisticBySymptoms(symptoms));
+			return Response.successResponse(repository.getStatisticBySymptoms(symptoms));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -354,16 +365,16 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_PATIENT_NOT_MEETING, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getPatientNotMeeting() throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getPatientNotMeeting());
+			return Response.successResponse(repository.getPatientNotMeeting());
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
 	}
 
 	@RequestMapping(value = Constants.REQUEST_CREATE_SYMPTOM, method = RequestMethod.POST)
-	public @ResponseBody Map<String, Object> addSymptom(@RequestBody Symptoms symptom) throws RestException {
+	public @ResponseBody Map<String, Object> addSymptom(@RequestBody Symptom symptom) throws RestException {
 		try {
-			if (persistenceServices.addSymptom(symptom)) {
+			if (repository.addSymptom(symptom)) {
 				return Response.emptyResponse();
 			}
 			return Response.errorResponse(Constants.ERROR_EXISTED_SYMPTOM);
@@ -378,7 +389,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 			date = format.parse(dateStr);
-			return Response.successResponse(persistenceServices.getPatientByDay(date));
+			return Response.successResponse(repository.getPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -390,7 +401,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 			date = format.parse(dateStr);
-			return Response.successResponse(persistenceServices.getCalledPatientByDay(date));
+			return Response.successResponse(repository.getCalledPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -402,7 +413,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 			date = format.parse(dateStr);
-			return Response.successResponse(persistenceServices.getTherapyPatientByDay(date));
+			return Response.successResponse(repository.getTherapyPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -414,7 +425,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 		try {
 			DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 			date = format.parse(dateStr);
-			return Response.successResponse(persistenceServices.getTherapyPatientByDay(date));
+			return Response.successResponse(repository.getTherapyPatientByDay(date));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -423,7 +434,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC, method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllCinic() throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getAllClinic());
+			return Response.successResponse(repository.getAllClinic());
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -432,7 +443,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC_BY_DOCTOR + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllCinicByDoctor(@PathVariable int doctorId) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getAllClinicByDocotr(doctorId));
+			return Response.successResponse(repository.getAllClinicByDocotr(doctorId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -441,7 +452,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC_BY_CITY + "/{city}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllCinicByDoctor(@PathVariable String city) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getAllClinicByCity(city));
+			return Response.successResponse(repository.getAllClinicByCity(city));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -450,7 +461,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_FREE_INTERVALS_BY_DOCTOR + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getFreeIntervalByDoctor(@PathVariable int doctorId) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getFreeIntervalByDoctor(doctorId));
+			return Response.successResponse(repository.getFreeIntervalByDoctor(doctorId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}
@@ -459,7 +470,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_FREE_INTERVALS_BY_CITY + "/{city}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getFreeIntervalByCity(@PathVariable String city) throws RestException {
 		try {
-			return Response.successResponse(persistenceServices.getFreeIntervalByCity(city));
+			return Response.successResponse(repository.getFreeIntervalByCity(city));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}

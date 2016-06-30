@@ -60,20 +60,20 @@ public class ConvertorJsonToDao {
 		return treatmentDao;
 	}
 
-	public static List<ProblemsDAO> convertProblems(List<Problems> problems) {
+	public static List<ProblemDAO> convertProblems(List<Problem> problems) {
 		if (problems == null)
 			return null;
-		List<ProblemsDAO> problemsDao = new LinkedList<ProblemsDAO>();
-		for (Problems problem : problems) {
+		List<ProblemDAO> problemsDao = new LinkedList<ProblemDAO>();
+		for (Problem problem : problems) {
 			problemsDao.add(convertProblem(problem));
 		}
 		return problemsDao;
 	}
 
-	public static ProblemsDAO convertProblem(Problems problem) {
+	public static ProblemDAO convertProblem(Problem problem) {
 		if (problem != null) {
-			ProblemsDAO problemDao = new ProblemsDAO();
-			problemDao.setNameProblem(problem.getNameProblem());
+			ProblemDAO problemDao = new ProblemDAO();
+			problemDao.setName(problem.getName());
 			problemDao.setDescription(problem.getDescription());
 			// problemDao.setSymptoms(convertSymptoms(problem.getSymptoms()));
 			return problemDao;
@@ -95,7 +95,7 @@ public class ConvertorJsonToDao {
 	public static DoctorDAO convertDoctor(Doctor doctor) {
 		if (doctor != null) {
 			DoctorDAO doctorDao = new DoctorDAO();
-			doctorDao.setNameLogin(doctor.getNameLogin());
+			doctorDao.setName(doctor.getName());
 			doctorDao.setPassword(doctor.getPassword());
 			doctorDao.setEmail(doctor.getEmail());
 			doctorDao.setTelNumber(doctor.getTelNumber());
@@ -103,13 +103,14 @@ public class ConvertorJsonToDao {
 			doctorDao.setAddress(doctor.getAddress());
 			doctorDao.setCertification(doctor.getCertification());
 			doctorDao.setComments(doctor.getComments());
-			doctorDao.setComments(doctor.getComments());
 			doctorDao.setExpert(doctor.getExpert());
 			doctorDao.setLectors(doctor.getLectors());
 			doctorDao.setOtherSpecialty(doctor.getOtherSpecialty());
 			doctorDao.setPreferential(doctor.getPreferential());
 			doctorDao.setSpecialty(doctor.getSpecialty());
-			doctorDao.setTargetAudience(doctor.getTargetAudience());
+			doctorDao.setTargetFromAge(doctor.getTargetFromAge());
+			doctorDao.setTargetToAge(doctor.getTargetToAge());
+			doctorDao.setTargetGender(doctor.getTargetGender());
 			// doctorDao.setClinics(convetClinics(doctor.getClinics()));
 			return doctorDao;
 		}
@@ -155,23 +156,23 @@ public class ConvertorJsonToDao {
 		return slotDao;
 	}
 
-	public static List<SymptomsDAO> convertSymptoms(List<Symptoms> symptoms) {
+	public static List<SymptomDAO> convertSymptoms(List<Symptom> symptoms) {
 		if (symptoms == null)
 			return null;
-		List<SymptomsDAO> symptomsDao = new LinkedList<SymptomsDAO>();
-		for (Symptoms symptom : symptoms) {
+		List<SymptomDAO> symptomsDao = new LinkedList<SymptomDAO>();
+		for (Symptom symptom : symptoms) {
 			symptomsDao.add(convertSymptom(symptom));
 		}
 		return symptomsDao;
 	}
 
-	public static SymptomsDAO convertSymptom(Symptoms symptom) {
+	public static SymptomDAO convertSymptom(Symptom symptom) {
 		if (symptom == null)
 			return null;
 
-		SymptomsDAO symptomDao = new SymptomsDAO();
+		SymptomDAO symptomDao = new SymptomDAO();
 		// symptomDao.setId(symptom.getId());
-		symptomDao.setNameSymptom(symptom.getNameSymptom());
+		symptomDao.setName(symptom.getName());
 		return symptomDao;
 	}
 
