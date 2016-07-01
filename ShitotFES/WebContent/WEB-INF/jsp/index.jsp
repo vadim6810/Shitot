@@ -4,8 +4,7 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="${pageContext.request.contextPath}/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
 <title>Shitot</title>
 <style>
 body {
@@ -48,7 +47,7 @@ a {
 						</a>
 							<ul class="dropdown-menu">
 								<li><a href="addPatientForm">Create new patient</a></li>
-								<li><a href="addDoctorForm">Create new doctor</a></li>
+								<li><a href="addDoctorForm?action=create">Create new doctor</a></li>
 								<li><a href="addProblemForm">Create specialty</a></li>
 								<li><a href="addSymptomForm">Create new symptom</a></li>
 								<li class="divider"></li>

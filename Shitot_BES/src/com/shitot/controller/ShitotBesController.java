@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shitot.exception.RestException;
 import com.shitot.interfaces.Constants;
-import com.shitot.interfaces.IShitotRepository;
-import com.shitot.json.*;
+import com.shitot.repository.ShitotRepository;
 import com.shitot.response.Response;
+import com.shitot.to.*;
 
 @Controller
 @RequestMapping("/")
 public class ShitotBesController extends ExceptionHandlerController {
 
 	@Autowired
-	IShitotRepository repository;
+	ShitotRepository repository;
 
 	@RequestMapping({ "/", "index" })
 	String index() {

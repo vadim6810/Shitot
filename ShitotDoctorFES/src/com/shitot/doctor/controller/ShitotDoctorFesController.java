@@ -60,7 +60,7 @@ public class ShitotDoctorFesController {
 		String message = null;
 		if (nameLogin != null && password != null && nameLogin.length() > 0 && password.length() > 0) {
 			Doctor requestDoctor = new Doctor();
-			requestDoctor.setNameLogin(nameLogin);
+			requestDoctor.setName(nameLogin);
 			requestDoctor.setPassword(password);
 			Map<String, Object> response = rest.postForObject(Constants.URI + Constants.REQUEST_LOGIN_DOCTOR,
 					requestDoctor, Map.class);

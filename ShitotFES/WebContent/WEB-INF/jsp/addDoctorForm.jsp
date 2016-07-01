@@ -6,123 +6,110 @@
 <title>Add doctor form</title>
 </head>
 <body>
-<h2>Add new doctor</h2>
-<hr>
+	<h2>Add new doctor</h2>
+	<hr>
+	<jsp:useBean id="doctor" type="com.shitot.to.Doctor" scope="request"/>
 	<form action="addDoctorAction" method="post">
+	<input type="hidden" name="id" value="${doctor.id}">
 		<dl>
 			<dt>Enter doctor name:</dt>
 			<dd>
-				<input type="text" name="doctorName" required />
+				<input type="text" name="doctorName" required value="${doctor.name}"/>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor password:</dt>
 			<dd>
-				<input type="text" name="password" required />
+				<input type="text" name="password" required value="${doctor.password}"/>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor email:</dt>
 			<dd>
-				<input type="email" name="email"/>
+				<input type="email" name="email" value="${doctor.email}"/>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor tel number:</dt>
 			<dd>
-				<input type="text" name="telNumber" />
+				<input type="text" name="telNumber" value="${doctor.telNumber}"/>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor home tel:</dt>
 			<dd>
-				<input type="text" name="telHouse" />
+				<input type="text" name="telHouse" value="${doctor.telHouse}"/>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor address:</dt>
 			<dd>
-				<input type="text" name="address" />
+				<input type="text" name="address" value="${doctor.address}"/>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor specialty:</dt>
 			<dd>
-				<select name="specialty" id="problem">
-				<c:forEach items="${problems}" var="p">
-				<option>${p}				
-				</c:forEach>
-				</select>
-				<a href="addProblemForm">Add specialty</a>
+				<select name="specialty" id="problem" value="${doctor.specialty}">
+					<option></option>
+					<c:forEach items="${problems}" var="p">
+						<option ${p.equals(doctor.specialty)?'selected':''}>${p}</option>
+					</c:forEach>
+				</select> <a href="addProblemForm">Add specialty</a>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor optional specialty:</dt>
 			<dd>
-				<select name="otherSpecialty" id="problemOpt">
-				<c:forEach items="${problems}" var="p">
-				<option>${p}				
-				</c:forEach>
+				<select name="otherSpecialty" id="problemOpt" value="${doctor.otherSpecialty}">
+					<option></option>
+					<c:forEach items="${problems}" var="p">
+						<option ${p.equals(doctor.otherSpecialty)?'selected':''}>${p}</option>
+					</c:forEach>
 				</select>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor target Audience:</dt>
 			<dd>
-				From age:<input type="number" style="width: 40px;" name="targetFromAge">
-				To age:<input type="number" style="width: 40px;" name="targetToAge"> 
-				<input type="checkbox" name="targetMale" value=1>M
-				<input type="checkbox" name="targetFemale" value=2>F
+				From age:<input type="number" min="0" value="0" style="width: 50px;"name="targetFromAge" value="${doctor.targetFromAge}"> 
+				To age:<input type="number"	min="0" value="0" style="width: 50px;" name="targetToAge" value="${doctor.targetToAge}"> 
+				<input type="checkbox" name="targetMale" value="1" ${doctor.targetGender%2==1?'checked':''}>M 
+				<input type="checkbox" name="targetFemale" value="2" ${doctor.targetGender>1?'checked':''}>F
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor preferential:</dt>
 			<dd>
-				<input type="text" name="preferential" />
+				<input type="text" name="preferential" value="${doctor.preferential}"/>
 			</dd>
 		</dl>
 		<dl>
 			<dt>Enter doctor expert:</dt>
 			<dd>
-				<input type="text" name="expert" />
+				<input type="text" name="expert" value="${doctor.expert}"/>
 			</dd>
 		</dl>
 		<dl>
-			<dt>
-				Enter doctor certification:</dt>
+			<dt>Enter doctor certification:</dt>
 			<dd>
-				<input type="text" name="certification" />
+				<input type="text" name="certification" value="${doctor.certification}"/>
 			</dd>
 		</dl>
 		<dl>
-			<dt>
-				Enter doctor lectors:</dt>
+			<dt>Enter doctor lectors:</dt>
 			<dd>
-				<input type="text" name="lectors" />
+				<input type="text" name="lectors" value="${doctor.lectors}"/>
 			</dd>
 		</dl>
 		<dl>
-			<dt>
-				Enter doctor comments:</dt>
+			<dt>Enter doctor comments:</dt>
 			<dd>
-				<input type="text" name="comments" />
+				<input type="text" name="comments" value="${doctor.comments}"/>
 			</dd>
 		</dl>
-		<button type="submit">Add doctor</button>
+		<button type="submit">Save</button>
 	</form>
 	<a href="home">cancel</a>
-	<script>
-	var sel1 = document.getElementById("problem");
-	var sel2 = document.getElementById("problemOpt");
-	var pList = JSON.parse('${problemsList}');
-	for (var p in pList) {
-		var option = document.createElement("option");
-		option.innerHTML = pList[p];
-		sel1.appendChild(option);
-		option = document.createElement("option");
-		option.innerHTML = pList[p];
-		sel2.appendChild(option);
-	}
-	</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.shitot.doctor.json;
+package com.shitot.to;
 
 import java.util.*;
 

@@ -4,7 +4,7 @@ package com.shitot.interfaces;
 import com.shitot.response.Response;*/
 
 public interface Constants {
-	String URI = "http://localhost:8080/bes";
+	String URI = "http://localhost:8080/shitotbes";
 	// 109.202.2.210:37002/bes/
 
 	String ERROR_EDIT_CALENDAR = "Error edit calendar";

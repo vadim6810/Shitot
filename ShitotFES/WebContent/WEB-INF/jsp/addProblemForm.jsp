@@ -6,6 +6,7 @@
 <title>Add problem</title>
 </head>
 <body>
+<h2>Create problem</h2>
 	<form method="get" action="addProblemAction">
 		<dl>
 			<dt>Problem:</dt>
@@ -23,7 +24,7 @@
 			<dt>Symptoms:</dt>
 			<dd>
 				<c:forEach items="${symptoms}" var="s">
-					<jsp:useBean id="s" scope="page" type="com.shitot.json.Symptom" />
+					<jsp:useBean id="s" scope="page" type="com.shitot.to.Symptom" />
 					<input type="checkbox" name="${s.id}" id="${s.id}">
 					<label for="${s.id}">${s.name}</label><br>
 				</c:forEach>

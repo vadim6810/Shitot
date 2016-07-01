@@ -1,15 +1,14 @@
-package com.shitot.doctor.json;
+package com.shitot.model;
 
 import java.util.*;
+import javax.persistence.*;
 
-public class Doctor {
-
-	private int id;
+@Entity(name = "doctors")
+public class DoctorDAO extends NamedDAO{
 
 	private String address;
 	private String certification;
 	private String comments;
-	private String name;
 	private String email;
 	private String expert;
 	private String lectors;
@@ -17,36 +16,17 @@ public class Doctor {
 	private String password;
 	private String preferential;
 	private String specialty;
+	private String targetAudience;
 	private int targetFromAge;
 	private int targetGender;// 1 - Male, 2 - Female, 0 - Both
 	private int targetToAge;
 	private String telHouse;
 	private String telNumber;
 
-	List<Clinic> clinics;
-
-	public Doctor() {
-	}
-
-	public Doctor(String address, String certification, String comments, String name, String email, String expert,
-			String lectors, String otherSpecialty, String password, String preferential, String specialty,
-			int targetFromAge, int targetGender, int targetToAge, String telHouse, String telNumber) {
-		this.address = address;
-		this.certification = certification;
-		this.comments = comments;
-		this.name = name;
-		this.email = email;
-		this.expert = expert;
-		this.lectors = lectors;
-		this.otherSpecialty = otherSpecialty;
-		this.password = password;
-		this.preferential = preferential;
-		this.specialty = specialty;
-		this.targetFromAge = targetFromAge;
-		this.targetGender = targetGender;
-		this.targetToAge = targetToAge;
-		this.telHouse = telHouse;
-		this.telNumber = telNumber;
+	@OneToMany(mappedBy = "doctor")
+	List<ClinicDAO> clinics;
+	
+	public DoctorDAO() {
 	}
 
 	public String getAddress() {
@@ -57,16 +37,12 @@ public class Doctor {
 		return certification;
 	}
 
-	public List<Clinic> getClinics() {
+	public List<ClinicDAO> getClinics() {
 		return clinics;
 	}
 
 	public String getComments() {
 		return comments;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String getEmail() {
@@ -75,10 +51,6 @@ public class Doctor {
 
 	public String getExpert() {
 		return expert;
-	}
-
-	public int getId() {
-		return id;
 	}
 
 	public String getLectors() {
@@ -99,6 +71,10 @@ public class Doctor {
 
 	public String getSpecialty() {
 		return specialty;
+	}
+
+	public String getTargetAudience() {
+		return targetAudience;
 	}
 
 	public int getTargetFromAge() {
@@ -129,16 +105,12 @@ public class Doctor {
 		this.certification = certification;
 	}
 
-	public void setClinics(List<Clinic> clinics) {
+	public void setClinics(List<ClinicDAO> clinics) {
 		this.clinics = clinics;
 	}
 
 	public void setComments(String comments) {
 		this.comments = comments;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void setEmail(String email) {
@@ -147,10 +119,6 @@ public class Doctor {
 
 	public void setExpert(String expert) {
 		this.expert = expert;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public void setLectors(String lectors) {
@@ -173,6 +141,10 @@ public class Doctor {
 		this.specialty = specialty;
 	}
 
+	public void setTargetAudience(String targetAudience) {
+		this.targetAudience = targetAudience;
+	}
+
 	public void setTargetFromAge(int targetFromAge) {
 		this.targetFromAge = targetFromAge;
 	}
@@ -192,15 +164,4 @@ public class Doctor {
 	public void setTelNumber(String telNumber) {
 		this.telNumber = telNumber;
 	}
-
-	@Override
-	public String toString() {
-		return "Doctor [id=" + id + ", name=" + name + ", password=" + password + ", telNumber=" + telNumber
-				+ ", telHouse=" + telHouse + ", email=" + email + ", address=" + address + ", specialty=" + specialty
-				+ ", targetFromAge=" + targetFromAge + ", targetToAge=" + targetToAge + ", targetGender=" + targetGender
-				+ ", otherSpecialty=" + otherSpecialty + ", preferential=" + preferential + ", expert=" + expert
-				+ ", certification=" + certification + ", lectors=" + lectors + ", comments=" + comments + ", clinics="
-				+ clinics + "]";
-	}
-
 }

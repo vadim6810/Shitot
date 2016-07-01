@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,12 +23,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shitot.interfaces.Constants;
-import com.shitot.json.Doctor;
-import com.shitot.json.Patient;
-import com.shitot.json.Problem;
-import com.shitot.json.Symptom;
-import com.shitot.json.Treatment;
-import com.shitot.json.User;
+import com.shitot.to.Doctor;
+import com.shitot.to.Patient;
+import com.shitot.to.Problem;
+import com.shitot.to.Symptom;
+import com.shitot.to.Treatment;
+import com.shitot.to.User;
 import com.shitot.utils.Utils;
 
 @Controller
@@ -109,9 +110,14 @@ public class ShitotFesController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addDoctorForm")
-	public String addDoctorForm(Model model) {
+	public String addDoctorForm(Model model, String action, Integer id) {
 		if (!authorized)
 			return index(model, "loginUserForm");
+		if ("update".equals(action)) {
+			Map<String,Object> response = restTemplate.getForObject(Constants.URI+Constants.REQUEST_GET_DOCTOR_BY_ID+"/"+id, Map.class);
+			Doctor updDoctor = om.convertValue(response.get("data"), Doctor.class);
+			model.addAttribute("doctor",updDoctor);
+		}
 		Map<String, Object> response = restTemplate.getForObject(Constants.URI + Constants.REQUEST_GET_ALL_PROBLEMS,
 				Map.class);
 		List<String> problems=om.convertValue(response.get("data"), new TypeReference<List<String>>() {});
@@ -121,7 +127,7 @@ public class ShitotFesController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addDoctorAction")
-	String addDoctor(Model model, String doctorName, String password, String email, String telNumber, String telHouse,
+	String addDoctor(Model model, Integer id, String doctorName, String password, String email, String telNumber, String telHouse,
 			String address, String specialty, String otherSpecialty, Integer targetFromAge, Integer targetToAge,
 			Integer targetMale, Integer targetFemale, String preferential, String expert, String certification,
 			String lectors, String comments) {
@@ -129,7 +135,7 @@ public class ShitotFesController {
 			return index(model, "loginUserForm");
 		if (targetFromAge == null)
 			targetFromAge = 0;
-		if (targetToAge == null)
+		if (targetToAge == null || targetToAge==0)
 			targetToAge = 200;
 		if (targetMale == null)
 			targetMale = 0;
@@ -137,7 +143,8 @@ public class ShitotFesController {
 			targetFemale = 0;
 		int targetGender = (targetMale + targetFemale) % 3;
 		Doctor doctor = new Doctor(address, certification, comments, doctorName, email, expert, lectors, otherSpecialty,
-				password, preferential, otherSpecialty, targetFromAge, targetGender, targetToAge, telHouse, telNumber);
+				password, preferential, specialty, targetFromAge, targetGender, targetToAge, telHouse, telNumber);
+		if (id!=null) doctor.setId(id);
 		Map<String, Object> response = restTemplate.postForObject(Constants.URI + Constants.REQUEST_CREATE_DOCTOR,
 				doctor, Map.class);
 		String message = om.convertValue(response.get("result"), String.class);
@@ -192,15 +199,14 @@ public class ShitotFesController {
 		return addProblemForm(model);
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings("unchecked")
 	@RequestMapping("getAllDoctorsAction")
 	private String getAllDoctors(Model model) throws IOException {
 		if (!authorized)
 			return index(model, "loginUserForm");
 		Map<String, Object> response = restTemplate.getForObject(Constants.URI + Constants.REQUEST_GET_ALL_DOCTOR,
 				Map.class);
-		List<Doctor> data = om.convertValue(response.get("data"), new TypeReference<List<Doctor>>() {
-		});
+		List<Doctor> data = om.convertValue(response.get("data"), new TypeReference<List<Doctor>>() {});
 		model.addAttribute("doctorsList", data);
 		return index(model, "viewDoctors");
 	}

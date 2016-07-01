@@ -21,6 +21,6 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
-	<bean id="persistenceServices" class="com.shitot.model.ServicesHibernate" />
+	<bean id="persistenceServices" class="com.shitot.repository.ShitotRepositoryHibernateImpl" />
 
 </beans>
