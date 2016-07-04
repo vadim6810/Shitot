@@ -16,6 +16,7 @@
 				<th>Tel number</th>
 				<th></th>
 				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,6 +28,7 @@
 					<td>${doctor.telNumber}</td>
 					<td><a href="addDoctorForm?action=update&id=${doctor.id}">Update</a>
 					<td><a href="deleteDoctor?id=${doctor.id}">Delete</a></td>
+					<td><a href="createScheduleForm?doctorId=${doctor.id}">Create Schedule</a>
 			</c:forEach>
 		</tbody>
 	</table>

@@ -204,14 +204,16 @@ public class ShitotRepositoryHibernateImpl implements ShitotRepository {
 	@Override
 	@Transactional
 	public boolean createClinic(Clinic clinic) {
-		int docId = clinic.getDoctor().getId();
+		int doctorId = clinic.getDoctor().getId();
 		Query q = em.createQuery(
-				"Select c from clinics c join c.doctor d where c.city=?1 and c.addressClinic=?2 and d.id=?3");
-		q.setParameter(1, clinic.getCity()).setParameter(2, clinic.getAddressClinic()).setParameter(3, docId);
-		List<ClinicDAO> cls = q.getResultList();
-		if (cls.size() == 0) {
+				"Select c from clinics c join c.doctor d where c.city=?1 and c.addressClinic=?2 and d.id=?3")
+				.setParameter(1, clinic.getCity())
+				.setParameter(2, clinic.getAddressClinic())
+				.setParameter(3, doctorId);
+		List<ClinicDAO> clinics = q.getResultList();
+		if (clinics.size() == 0) {
 			ClinicDAO cl = ConvertorJsonToDao.convertClinic(clinic);
-			DoctorDAO doctor = em.find(DoctorDAO.class, docId);
+			DoctorDAO doctor = em.find(DoctorDAO.class, doctorId);
 			cl.setDoctor(doctor);
 			List<SlotDAO> slotsDAO = createSlot(clinic.getSlots());
 			cl.setSlots(slotsDAO);
@@ -237,7 +239,6 @@ public class ShitotRepositoryHibernateImpl implements ShitotRepository {
 				if (interval != null) {
 					em.persist(interval);
 					intervalDao.add(interval);
-
 				}
 			}
 			sl.setIntervals(intervalDao);
@@ -323,11 +324,10 @@ public class ShitotRepositoryHibernateImpl implements ShitotRepository {
 	// *
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Clinic> getAllClinicByDocotr(int doctorId) {
+	public List<Clinic> getAllClinicByDoctor(int doctorId) {
 		Query q = em.createQuery("Select c From clinics c join c.doctor d Where d.id=?1");
 		q.setParameter(1, doctorId);
-		List<ClinicDAO> cl = q.getResultList();
-		List<Clinic> resCl = ConvertorDaoToJson.convertClinics(cl);
+		List<Clinic> resCl = ConvertorDaoToJson.convertClinics((List<ClinicDAO>) q.getResultList());
 		return resCl;
 	}
 

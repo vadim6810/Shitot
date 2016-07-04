@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class IntervalDAO extends BaseDAO {
 
 	private String hours;
-
+	
 	@OneToOne
 	TreatmentDAO treatment;
 

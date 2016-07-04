@@ -31,7 +31,7 @@ public interface ShitotRepository {
     List<Doctor> getAllDoctors();
     List<Clinic> getAllClinic();
     List<Symptom> getAllSymptoms();
-    List<Clinic> getAllClinicByDocotr(int doctorId);
+    List<Clinic> getAllClinicByDoctor(int doctorId);
     List<Clinic> getAllClinicByCity(String city);
     List<Doctor> getDoctorByClinicCity(String city);
 	List<Doctor> getDoctorBySpecialty(String specialty);

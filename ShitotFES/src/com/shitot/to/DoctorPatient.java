@@ -2,8 +2,8 @@ package com.shitot.to;
 
 import java.util.*;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+//import javax.persistence.Temporal;
+//import javax.persistence.TemporalType;
 
 public class DoctorPatient {
 	
@@ -13,7 +13,7 @@ public class DoctorPatient {
 	private String checkNumber;
 	private String description;
 	private int doctorId;
-	@Temporal(TemporalType.DATE)
+//	@Temporal(TemporalType.DATE)
 	private Date dateMeeting;
 	
 	public DoctorPatient() {}

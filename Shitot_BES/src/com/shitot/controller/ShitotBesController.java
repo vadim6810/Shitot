@@ -443,7 +443,7 @@ public class ShitotBesController extends ExceptionHandlerController {
 	@RequestMapping(value = Constants.REQUEST_GET_ALL_CLINIC_BY_DOCTOR + "/{doctorId}", method = RequestMethod.GET)
 	public @ResponseBody Map<String, Object> getAllCinicByDoctor(@PathVariable int doctorId) throws RestException {
 		try {
-			return Response.successResponse(repository.getAllClinicByDocotr(doctorId));
+			return Response.successResponse(repository.getAllClinicByDoctor(doctorId));
 		} catch (Throwable e) {
 			throw new RestException(e);
 		}

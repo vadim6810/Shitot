@@ -2,14 +2,14 @@ package com.shitot.doctor.json;
 
 import java.util.*;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 
 public class Slot {
 	
 	private int id;
 	
 	//private int dayOfWeek;
-	@Temporal(TemporalType.DATE)
+//	@Temporal(TemporalType.DATE)
 	private Date date;
 	
 	List<Interval> intervals;

@@ -1,10 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Doctor home page</title>
 </head>
 <body>
 	<a href="loginDoctorForm">1. Login Doctor</a><br>
@@ -24,6 +23,6 @@
 	<!-- <a href="removeForm">3. remove person </a><br>
 	<a href="getPersonsByNameForm">4. getting persons by name</a><br>
 	<a href="getPersonsByCityForm"> 5. getting persons by city</a> -->
- -->	
+ ${message}
 </body>
 </html>

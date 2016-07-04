@@ -1,23 +1,27 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Login</title>
 </head>
 <body>
-<form action="loginDoctorAction">
-
-Enter login name:<input type="text" name="nameLogin"/><br>
-Enter password:<input type="password" name="password"/><br>
-
-<input type="submit" value="Log In"/>
-<br>
-<br>
-<br>
-<br>
-</form>
-<a href="home">cancel</a>
+	<form action="loginDoctorAction" method="post">
+		<dl>
+			<dt>Enter login name:</dt>
+			<dd>
+				<input type="text" name="name" required />
+			</dd>
+		</dl>
+		<dl>
+			<dt>Enter password:</dt>
+			<dd>
+				<input type="password" name="password" required />
+			</dd>
+		</dl>
+		<p>${logError}</p>
+		<button type="submit">Log In</button>
+	</form>
+	<br> ${cancel}
 </body>
 </html>

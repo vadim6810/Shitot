@@ -3,8 +3,8 @@ package com.shitot.doctor.json;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+//import javax.persistence.Temporal;
+//import javax.persistence.TemporalType;
 
 
 
@@ -19,11 +19,11 @@ public class Treatment {
     private String description;
     //private String doctor;
     
-    @Temporal(TemporalType.DATE)
+//    @Temporal(TemporalType.DATE)
     private Date dateApplication;
-    @Temporal(TemporalType.DATE)
+//    @Temporal(TemporalType.DATE)
     private Date dateMeeting;
-    @Temporal(TemporalType.DATE)
+//    @Temporal(TemporalType.DATE)
     private Date datePayment;
     
     List<Problems> problems;

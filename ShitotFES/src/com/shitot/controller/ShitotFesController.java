@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +14,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shitot.interfaces.Constants;
@@ -36,19 +33,22 @@ import com.shitot.utils.Utils;
 @Scope("session")
 public class ShitotFesController {
 	protected boolean authorized = false;
-	protected boolean authorizeDoctor = false;
-	protected User loggerUser;
-	protected Doctor doctor;
+//	protected boolean authorizeDoctor = false;
+	protected User loggedUser;
+	// protected Doctor doctor;
 	protected RestTemplate restTemplate = new RestTemplate();
 	protected ObjectMapper om = new ObjectMapper();
 
+	protected String index(Model model, String page) {
+		if (authorized)
+			model.addAttribute("loggedUser", loggedUser.getName());
+		model.addAttribute("page", page);
+		return "index";
+	}
 	// Customer Page
 	@RequestMapping({ "/", "home" })
-	String home(Model model) throws IOException {
-		if (authorized)
-			return index(model, "home");
-		else
-			return index(model, "loginUserForm");
+	public String home(Model model) throws IOException {
+		return index(model, authorized? "home": "loginUserForm");
 	}
 
 	@RequestMapping("loginUserForm")
@@ -70,7 +70,7 @@ public class ShitotFesController {
 		model.addAttribute("message", om.convertValue(response.get("result"), String.class));
 		if (requestUser != null) {
 			authorized = true;
-			loggerUser = requestUser;
+			loggedUser = requestUser;
 			return index(model, "home");
 		}
 		return index(model, "loginUserForm");
@@ -101,41 +101,36 @@ public class ShitotFesController {
 		return index(model, "home");
 	}
 
-	protected String index(Model model, String page) {
-		if (authorized)
-			model.addAttribute("loggedUser", loggerUser.getName());
-		model.addAttribute("page", page);
-		return "index";
-	}
-
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addDoctorForm")
 	public String addDoctorForm(Model model, String action, Integer id) {
 		if (!authorized)
 			return index(model, "loginUserForm");
+		Doctor doctor = new Doctor();
 		if ("update".equals(action)) {
-			Map<String,Object> response = restTemplate.getForObject(Constants.URI+Constants.REQUEST_GET_DOCTOR_BY_ID+"/"+id, Map.class);
-			Doctor updDoctor = om.convertValue(response.get("data"), Doctor.class);
-			model.addAttribute("doctor",updDoctor);
+			Map<String, Object> response = restTemplate
+					.getForObject(Constants.URI + Constants.REQUEST_GET_DOCTOR_BY_ID + "/" + id, Map.class);
+			doctor = om.convertValue(response.get("data"), Doctor.class);
 		}
 		Map<String, Object> response = restTemplate.getForObject(Constants.URI + Constants.REQUEST_GET_ALL_PROBLEMS,
 				Map.class);
-		List<String> problems=om.convertValue(response.get("data"), new TypeReference<List<String>>() {});
+		List<String> problems = om.convertValue(response.get("data"), new TypeReference<List<String>>() {});
+		model.addAttribute("doctor", doctor);
 		model.addAttribute("problems", problems);
 		return index(model, "addDoctorForm");
 	}
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("addDoctorAction")
-	String addDoctor(Model model, Integer id, String doctorName, String password, String email, String telNumber, String telHouse,
-			String address, String specialty, String otherSpecialty, Integer targetFromAge, Integer targetToAge,
-			Integer targetMale, Integer targetFemale, String preferential, String expert, String certification,
-			String lectors, String comments) {
+	String addDoctor(Model model, Integer id, String doctorName, String password, String email, String telNumber,
+			String telHouse, String address, String specialty, String otherSpecialty, Integer targetFromAge,
+			Integer targetToAge, Integer targetMale, Integer targetFemale, String preferential, String expert,
+			String certification, String lectors, String comments) {
 		if (!authorized)
 			return index(model, "loginUserForm");
 		if (targetFromAge == null)
 			targetFromAge = 0;
-		if (targetToAge == null || targetToAge==0)
+		if (targetToAge == null || targetToAge == 0)
 			targetToAge = 200;
 		if (targetMale == null)
 			targetMale = 0;
@@ -144,7 +139,8 @@ public class ShitotFesController {
 		int targetGender = (targetMale + targetFemale) % 3;
 		Doctor doctor = new Doctor(address, certification, comments, doctorName, email, expert, lectors, otherSpecialty,
 				password, preferential, specialty, targetFromAge, targetGender, targetToAge, telHouse, telNumber);
-		if (id!=null) doctor.setId(id);
+		if (id != null)
+			doctor.setId(id);
 		Map<String, Object> response = restTemplate.postForObject(Constants.URI + Constants.REQUEST_CREATE_DOCTOR,
 				doctor, Map.class);
 		String message = om.convertValue(response.get("result"), String.class);
@@ -177,7 +173,8 @@ public class ShitotFesController {
 			return index(model, "loginUserForm");
 		Map<String, Object> response = restTemplate.getForObject(Constants.URI + Constants.REQUEST_GET_ALL_SYMPTOMS,
 				Map.class);
-		List<Symptom> symptoms=om.convertValue(response.get("data"), new TypeReference<List<Symptom>>() {});
+		List<Symptom> symptoms = om.convertValue(response.get("data"), new TypeReference<List<Symptom>>() {
+		});
 		model.addAttribute("symptoms", symptoms);
 		return index(model, "addProblemForm");
 	}
@@ -206,11 +203,14 @@ public class ShitotFesController {
 			return index(model, "loginUserForm");
 		Map<String, Object> response = restTemplate.getForObject(Constants.URI + Constants.REQUEST_GET_ALL_DOCTOR,
 				Map.class);
-		List<Doctor> data = om.convertValue(response.get("data"), new TypeReference<List<Doctor>>() {});
+		List<Doctor> data = om.convertValue(response.get("data"), new TypeReference<List<Doctor>>() {
+		});
 		model.addAttribute("doctorsList", data);
 		return index(model, "viewDoctors");
 	}
-
+		
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////	
 	@RequestMapping("addPatientForm")
 	public String addPatientForm(Model model) {
 		if (!authorized)
@@ -269,7 +269,7 @@ public class ShitotFesController {
 		treat.setDateMeeting(dateMeeting);
 		treat.setDoctor(doc);
 		treat.setInfSourse(infSourse);
-		treat.setNameUser(loggerUser.getName());
+		treat.setNameUser(loggedUser.getName());
 		treat.setProblems(problems);
 		System.out.println("treat " + treat.toString());
 		String message = null;

@@ -1,5 +1,6 @@
 package com.shitot.model;
 
+import java.time.DayOfWeek;
 import java.util.*;
 import javax.persistence.*;
 
@@ -9,7 +10,7 @@ public class SlotDAO extends BaseDAO {
 	// private int dayOfWeek;
 	@Temporal(TemporalType.DATE)
 	private Date date;
-
+	
 	@OneToMany
 	List<IntervalDAO> intervals;
 
